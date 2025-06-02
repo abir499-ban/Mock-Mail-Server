@@ -43,6 +43,11 @@ class dbService {
         }
     }
 
+    async findBy_id(model, id){
+        const res = await model.findById(id)
+        return res
+    }
+
 }
 
 module.exports = dbService

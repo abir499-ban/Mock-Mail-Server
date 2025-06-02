@@ -10,7 +10,12 @@ async function getToken(data){
     return token
 }
 
+async function getPayload(token){
+    const payload = await jwt.verify(token , SECRET_KEY)
+    return payload
+}
 
 
 
-module.exports = {getToken}
+
+module.exports = {getToken, getPayload}

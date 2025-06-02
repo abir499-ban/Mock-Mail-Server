@@ -3,6 +3,9 @@ const {createServer} = require('http')
 const dotenv  = require('dotenv')
 const dbService  = require('./utils/dbService')
 const AuthRouter = require('./routes/user.routes')
+const CloudinaryRouter = require('./routes/cloudinary.routes')
+const cors = require('cors')
+const authMiddleware = require('./middleware/authmiddleware')
 
 
 dotenv.config()
@@ -11,6 +14,7 @@ const MONGO_DB_URI = process.env.MONGO_DB_URI
 
 const app = express()
 const myserver = createServer(app)
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended : false}))
 
@@ -26,6 +30,7 @@ app.get('/', async(req, res)=>{
 })
 
 app.use('/auth' , AuthRouter)
+app.use('/cloudinary', authMiddleware, CloudinaryRouter)
 
 
 
