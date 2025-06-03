@@ -3,7 +3,9 @@
 const BACKEND_BASE_URL = 'http://localhost:8000'
 
 export const fetchMethods = {
-    post: async (path: string, body: any, headers = { 'Content-Type': 'application/json' }) => {
+    post: async (path: string, body: any, headers : Record<string , string> = {}) => {
+
+        headers = {...headers , 'Content-Type' : 'application/json'}
         try {
             const res = await fetch(BACKEND_BASE_URL + path, {
                 method: 'POST',
@@ -17,7 +19,7 @@ export const fetchMethods = {
             throw error
         }
     },
-    get : async(path : string , headers : Record<string , string>) => {
+    get : async(path : string , headers : Record<string , string> = {}) => {
         
         headers = {...headers , 'Content-Type' : 'application/json'}
         try {
@@ -32,4 +34,5 @@ export const fetchMethods = {
             throw error
         }
     }
+
 }

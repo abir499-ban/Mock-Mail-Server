@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { useSession } from 'next-auth/react'
 import { PencilIcon, Upload } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import {
@@ -18,11 +19,48 @@ import { Textarea } from '@/components/ui/textarea'
 import { MessageSchema, MessageSchemaType } from '@/utils/message.schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
+import { fetchMethods } from '@/config/fetchAPI'
 
 
 export function ComposeMessageModel({ username, email }: { username: string, email: string }) {
     const [file, setfile] = useState<File | null>(null)
-    
+    const { data } = useSession()
+    const[fileUploadControls, setfileUploadControls] = useState({
+        fileUploading : false,
+        fileUploaded : false
+    })
+
+    const handleFileUpload = async () => {
+        if (!file) {
+            console.log("file not uploaded")
+            return;
+        }
+        try {
+            const filename = file.name
+            const response = await fetchMethods.post('/cloudinary/get_signedUrl', JSON.stringify({ email, filename }), { 'authorization': `Bearer ${data?.accessToken}` })
+
+            const { apiKey, cloudName, folder, public_id, signature, timestamp } = response.data
+
+            const formData = new FormData()
+            formData.append("file", file);
+            formData.append("api_key", apiKey);
+            formData.append("timestamp", timestamp.toString());
+            formData.append("signature", signature);
+            formData.append("folder", folder);
+            formData.append("public_id", public_id);
+
+            const cloudinaryRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
+                method:'POST',
+                body:formData
+            })
+            const res = await cloudinaryRes.json()
+            console.log("Uploaded to Cloudinary:", res);
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     const {
         register,
         formState: { errors, isSubmitting },
@@ -132,6 +170,7 @@ export function ComposeMessageModel({ username, email }: { username: string, ema
                         <DialogClose asChild>
                             <Button variant="outline">Cancel</Button>
                         </DialogClose>
+                        <Button type='button' disabled={file === null} onClick={() => { handleFileUpload() }}>Upload File</Button>
                         <Button type="submit" className='cursor-pointer'>Send Mail</Button>
                     </DialogFooter>
 

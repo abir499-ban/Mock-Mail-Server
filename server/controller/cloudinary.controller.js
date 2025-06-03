@@ -9,7 +9,7 @@ const CloudinaryController = {
         if (!email || !filename) return new ResponseEmitter(res).badRequest()
         
         try{
-        const timestamp = Math.round(new Date(Date.now()).getTime() / 10000)
+        const timestamp = Math.round(new Date(Date.now()).getTime() / 1000)
         const folder = `uploads/${email}`
         const public_id = filename.split('.')[0]
 

@@ -3,6 +3,6 @@ const CloudinaryController = require('../controller/cloudinary.controller')
 
 const router = Router()
 
-router.get('/get_signedUrl' , CloudinaryController.get_signedURL)
+router.post('/get_signedUrl' , CloudinaryController.get_signedURL)
 
 module.exports = router

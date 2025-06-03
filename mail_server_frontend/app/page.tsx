@@ -26,7 +26,7 @@ export default function Home() {
         try {
           const userData = await fetchMethods.get(`/user/${data?.user.email}`,
             { 'authorization': `Bearer ${data?.accessToken}` })
-          console.table(userData)
+          //console.table(userData)
           setuser(userData)
         } catch (error) {
           console.log(error)
@@ -40,9 +40,6 @@ export default function Home() {
 
   return (
     <>
-      {status === 'authenticated' && data && (
-        <p>{data.user?.email} {data.accessToken}</p>
-      )}
       <div className="text-5xl flex mt-16 justify-center items-center font-serif text-red-500  bg-red-50">
         Welcome
       </div>
