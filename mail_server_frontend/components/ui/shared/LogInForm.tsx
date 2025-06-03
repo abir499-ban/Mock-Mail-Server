@@ -1,12 +1,14 @@
 "use client"
 import React, { useState } from 'react'
-import { Eye, EyeOff,Lock, Mail} from "lucide-react";
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button"
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { LogInFormSchema , LoginFomType } from '@/utils/user.schema';
+import { LogInFormSchema, LoginFomType } from '@/utils/user.schema';
+import {signIn} from 'next-auth/react'
+import { fetchMethods } from '@/config/fetchAPI';
 
 
 const LogInForm = () => {
@@ -20,16 +22,28 @@ const LogInForm = () => {
     } = useForm<LoginFomType>({
         resolver: zodResolver(LogInFormSchema),
         defaultValues: {
-            email : "",
-            password : ""
+            email: "",
+            password: ""
         }
     })
 
-    const SubmitFn = async(data : LoginFomType) =>{
+    const SubmitFn = async (data: LoginFomType) => {
         console.table(data)
+        try {
+            const res = await signIn('user_login',{
+                redirect: false,
+                email : data.email,
+                password : data.password
+            })
+            console.log(res)
+        }
+        catch (err) {
+            console.log(err)
+        }
+
     }
 
-    
+
 
     return (
         <form className="space-y-5" autoComplete="off" onSubmit={handleSubmit(SubmitFn)}>

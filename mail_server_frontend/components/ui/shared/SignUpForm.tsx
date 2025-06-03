@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { SignUpFormSchema , SignUpFormType } from '@/utils/user.schema';
+import { fetchMethods } from '@/config/fetchAPI';
 
   
 
@@ -32,6 +33,12 @@ const SignUpForm = () => {
 
     const SubmitFn = async(data : SignUpFormType) =>{
         console.table(data)
+        try {
+            const response = await fetchMethods.post('/auth/signup' , JSON.stringify(data))
+            console.log(response)
+        } catch (error) {
+            console.log(error)
+        }
     }
   return (
     <>
