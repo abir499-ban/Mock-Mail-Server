@@ -2,8 +2,9 @@ const express = require('express')
 const {createServer} = require('http')
 const dotenv  = require('dotenv')
 const dbService  = require('./utils/dbService')
-const AuthRouter = require('./routes/user.routes')
+const AuthRouter = require('./routes/auth.routes')
 const CloudinaryRouter = require('./routes/cloudinary.routes')
+const UserRouter = require('./routes/user.routes')
 const cors = require('cors')
 const authMiddleware = require('./middleware/authmiddleware')
 
@@ -31,6 +32,7 @@ app.get('/', async(req, res)=>{
 
 app.use('/auth' , AuthRouter)
 app.use('/cloudinary', authMiddleware, CloudinaryRouter)
+app.use('/user', authMiddleware , UserRouter)
 
 
 

@@ -1,11 +1,16 @@
 const { model, Schema } = require('mongoose')
 
 const MessageSchema = new Schema({
-    from: {
+    sender: {
         username: { type: String, required: true },
         email: { type: String, required: true }
     },
-    to: { email: { type: String, required: true } },
+    dest: { email: { type: String, required: true } },
+    status:{
+        type:String,
+        enum : ['pending' ,'sent' , 'failed'],
+        default: 'pending'
+    },
 
     subject: {
         type: String,
@@ -13,6 +18,7 @@ const MessageSchema = new Schema({
     },
 
     short_description: { type: String, required: false },
+    
     body: {
         type: String,
         required: true
