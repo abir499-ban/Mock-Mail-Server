@@ -31,6 +31,7 @@ export function ComposeMessageModel({ username, email }: { username: string, ema
     })
 
     const handleFileUpload = async () => {
+        setfileUploadControls(prev => ({ ...prev, fileUploading: true }))
         if (!file) {
             console.log("file not uploaded")
             return;
@@ -55,9 +56,11 @@ export function ComposeMessageModel({ username, email }: { username: string, ema
             })
             const res = await cloudinaryRes.json()
             console.log("Uploaded to Cloudinary:", res);
-
+            setfileUploadControls((prev)=>({...prev , fileUploaded : true}))
         } catch (error) {
             console.log(error)
+        }finally{
+            setfileUploadControls(prev => ({ ...prev, fileUploading: false }))
         }
     }
 
@@ -170,7 +173,7 @@ export function ComposeMessageModel({ username, email }: { username: string, ema
                         <DialogClose asChild>
                             <Button variant="outline">Cancel</Button>
                         </DialogClose>
-                        <Button type='button' disabled={file === null} onClick={() => { handleFileUpload() }}>Upload File</Button>
+                        <Button type='button' disabled={file === null || fileUploadControls.fileUploaded || fileUploadControls.fileUploading} onClick={() => { handleFileUpload() }}>Upload File</Button>
                         <Button type="submit" className='cursor-pointer'>Send Mail</Button>
                     </DialogFooter>
 
