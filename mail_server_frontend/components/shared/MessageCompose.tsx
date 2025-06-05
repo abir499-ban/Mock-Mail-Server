@@ -24,6 +24,7 @@ import { fetchMethods } from '@/config/fetchAPI'
 
 export function ComposeMessageModel({ username, email }: { username: string, email: string }) {
     const [file, setfile] = useState<File | null>(null)
+    const [fileUrl, setfileUrl] = useState<string | null>(null)
     const { data } = useSession()
     const[fileUploadControls, setfileUploadControls] = useState({
         fileUploading : false,
@@ -56,6 +57,7 @@ export function ComposeMessageModel({ username, email }: { username: string, ema
             })
             const res = await cloudinaryRes.json()
             console.log("Uploaded to Cloudinary:", res);
+            setfileUrl(res.secure_url)
             setfileUploadControls((prev)=>({...prev , fileUploaded : true}))
         } catch (error) {
             console.log(error)
@@ -79,6 +81,27 @@ export function ComposeMessageModel({ username, email }: { username: string, ema
         }
     })
 
+    const sendMail = async(formdata : MessageSchemaType) =>{
+        try {
+            const sendMailData = {
+                dest_mail : formdata.dest,
+                subject : formdata.subject,
+                short_desc : formdata.short_desc,
+                body : formdata.body,
+                sender_email : email,
+                sender_username : username,
+                fileUrl : fileUrl
+            }
+            const response = await fetchMethods.post('/user/sendMail' , JSON.stringify(sendMailData), {
+                'authorization' : `Bearer ${data?.accessToken}`
+            })
+            if(response) console.log(response)
+            else console.log("Error")
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
         <Dialog>
 
@@ -86,7 +109,7 @@ export function ComposeMessageModel({ username, email }: { username: string, ema
                 <Button className='hover:cursor-pointer'><PencilIcon />Compose</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[600px] h-[600]">
-                <form className='flex flex-col gap-5'>
+                <form className='flex flex-col gap-5' onSubmit={handleSubmit(sendMail)}>
 
                     <DialogHeader className='mb-9'>
                         <DialogTitle className='flex justify-center items-center text-xl'>Compose a Mail</DialogTitle>
@@ -174,7 +197,8 @@ export function ComposeMessageModel({ username, email }: { username: string, ema
                             <Button variant="outline">Cancel</Button>
                         </DialogClose>
                         <Button type='button' disabled={file === null || fileUploadControls.fileUploaded || fileUploadControls.fileUploading} onClick={() => { handleFileUpload() }}>Upload File</Button>
-                        <Button type="submit" className='cursor-pointer'>Send Mail</Button>
+                        <Button type="submit" className='cursor-pointer'>{
+                            isSubmitting ? 'Sending Mail...' : 'Send Mail'}</Button>
                     </DialogFooter>
 
                 </form>

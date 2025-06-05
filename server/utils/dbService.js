@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Message = require('../models/Messages.schema')
 
 class dbService {
     constructor() {
@@ -27,8 +28,9 @@ class dbService {
 
     async create(model , query={}){
         try {
-            await model.create(query)
+            const created_doc = await model.create(query)
             console.log("data saved onto database")
+            return created_doc
         } catch (error) {
             throw error
         }
@@ -46,6 +48,24 @@ class dbService {
     async findBy_id(model, id){
         const res = await model.findById(id)
         return res
+    }
+
+    async findByIdAndUpdate(model , query={} , operation={}){
+        try {
+            const res = await model.findByIdAndUpdate(query , operation)
+            return res
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async findOneAndUpdate(model , query={} , operation){
+        try {
+            const res = await model.findOneAndUpdate(query , operation)
+            return res
+        } catch (error) {
+            throw error
+        }
     }
 
 }

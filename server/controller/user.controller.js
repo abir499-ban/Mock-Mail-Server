@@ -1,6 +1,8 @@
+const Message = require("../models/Messages.schema")
 const User = require("../models/User.schema")
 const dbService = require("../utils/dbService")
 const ResponseEmitter = require("../utils/ResponseEmitter")
+const redis = require('../config/redisclient')
 
 
 
@@ -20,6 +22,31 @@ const userController = {
             console.log(error)
             return new ResponseEmitter(res).internalServerError()
         }
+    },
+    sendEmail : async(req , res)=>{
+        console.log(req.body)
+        try {
+            const{dest_mail , subject , short_desc , body , sender_email , sender_username , fileUrl} = req.body
+
+            const message = await new dbService().create(Message , {
+                sender:{
+                    username : sender_username,
+                    email : sender_email
+                },
+                dest:{email :dest_mail},
+                subject : subject,
+                short_description : short_desc,
+                body:body,
+                attachments : fileUrl
+            })
+
+            redis.lPush('Mails' , message._id.toString())
+            return new ResponseEmitter(res).successfull("Email queued.....to be sent")
+
+        } catch (error) {
+            console.log(error)
+        }
+        return new ResponseEmitter(res).successfull()
     }
 }
 

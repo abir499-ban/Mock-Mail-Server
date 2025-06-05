@@ -21,7 +21,7 @@ const authController = {
 
             const salt = await bcryptjs.genSalt(10)
             const hashedPassword = await bcryptjs.hash(password, salt)
-            await new dbService().create(User, { username, email, password: hashedPassword })
+            const user = await new dbService().create(User, { username, email, password: hashedPassword })
         }
         catch (err) {
             console.log(err)

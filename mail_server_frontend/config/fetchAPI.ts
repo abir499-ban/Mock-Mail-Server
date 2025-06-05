@@ -14,7 +14,7 @@ export const fetchMethods = {
             })
             const response = await res.json()
             if (res.ok && response) return response
-            else return null
+            else throw Error(response.message)
         } catch (error) {
             throw error
         }

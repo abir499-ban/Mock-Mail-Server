@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose')
+const mongoose = require('mongoose')
 
 const UserSchema = new Schema({
     username: {
@@ -14,14 +15,24 @@ const UserSchema = new Schema({
         type: String,
         required: true,
         validate: {
-            validator : (val) => { return val && val.length > 6},
+            validator: (val) => { return val && val.length > 6 },
         }
-    }
+    },
+    sentMessages: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Messages',
+        required: false
+    }],
+    receivedMessage: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Messages',
+        required: false
+    }]
 }, {
-    timestamps : true
+    timestamps: true
 });
 
 
 
-const User = model('User' , UserSchema)
+const User = model('User', UserSchema)
 module.exports = User

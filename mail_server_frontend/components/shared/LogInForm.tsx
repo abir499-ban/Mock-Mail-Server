@@ -9,10 +9,11 @@ import { useForm } from 'react-hook-form'
 import { LogInFormSchema, LoginFomType } from '@/utils/user.schema';
 import {signIn} from 'next-auth/react'
 import { fetchMethods } from '@/config/fetchAPI';
-
+import {useRouter} from 'next/navigation'
 
 const LogInForm = () => {
     const [showPassword, setshowPassword] = useState(false)
+    const router = useRouter()
 
     const {
         register,
@@ -36,6 +37,7 @@ const LogInForm = () => {
                 password : data.password
             })
             console.log(res)
+            router.push('/')
         }
         catch (err) {
             console.log(err)

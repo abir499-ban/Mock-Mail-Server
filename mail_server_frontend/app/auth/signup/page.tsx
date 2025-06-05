@@ -1,4 +1,4 @@
-import SignUpForm from '@/components/ui/shared/SignUpForm'
+import SignUpForm from '@/components/shared/SignUpForm'
 import React from 'react'
 import Link from 'next/link'
 

@@ -6,9 +6,9 @@ const MessageSchema = new Schema({
         email: { type: String, required: true }
     },
     dest: { email: { type: String, required: true } },
-    status:{
-        type:String,
-        enum : ['pending' ,'sent' , 'failed'],
+    status: {
+        type: String,
+        enum: ['pending', 'sent', 'failed'],
         default: 'pending'
     },
 
@@ -18,12 +18,12 @@ const MessageSchema = new Schema({
     },
 
     short_description: { type: String, required: false },
-    
+
     body: {
         type: String,
         required: true
     },
-    attachments: [{type:String}],
+    attachments: { type: String, required: false },
     isfavourite: {
         type: Boolean,
         default: false
@@ -34,6 +34,6 @@ const MessageSchema = new Schema({
     }
 })
 
-const Message = model('Messages' , MessageSchema)
+const Message = model('Messages', MessageSchema)
 
 module.exports = Message

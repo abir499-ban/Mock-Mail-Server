@@ -1,4 +1,4 @@
-import LogInForm from '@/components/ui/shared/LogInForm'
+import LogInForm from '@/components/shared/LogInForm'
 import React from 'react'
 import Link  from 'next/link'
 
