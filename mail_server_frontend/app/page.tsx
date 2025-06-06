@@ -8,6 +8,7 @@ import { fetchedUserType } from '@/utils/user.schema'
 import { ComposeMessageModel } from '@/components/shared/MessageCompose'
 import { Button } from '@/components/ui/button'
 import EmailLister from '@/components/shared/MessageList'
+import connectToWSS from '@/utils/wssConnector'
 
 export default function Home() {
   const router = useRouter()
@@ -19,8 +20,8 @@ export default function Home() {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     __v: 0,
-    sentMessages : [],
-    receivedMessage : []
+    sentMessages: [],
+    receivedMessage: []
   })
 
   useEffect(() => {
@@ -34,6 +35,22 @@ export default function Home() {
             { 'authorization': `Bearer ${data?.accessToken}` })
           //console.table(userData)
           setuser(userData)
+
+          try {
+            const ws = await connectToWSS(data.user.email)
+            ws.addEventListener('message', (eventData: any) => {
+              const socketData = JSON.parse(eventData.data)
+              if (socketData.event == 'incoming call') {
+                console.log(socketData.message)
+                alert(`New mail from ${socketData.message.from} about ${socketData.message.topic}`)
+              } else {
+                alert(`${socketData.message}`)
+              }
+            })
+          } catch (error) {
+            console.log("socke Error occured "+error)
+          }
+
         } catch (error) {
           console.log(error)
         }
@@ -52,7 +69,7 @@ export default function Home() {
 
       <div className='flex flex-row h-screen'>
         <div className=' shadow-md p-4 overflow-y-auto'>
-          <EmailLister sentMails={user.sentMessages} receivedMails={user.receivedMessage}/>
+          <EmailLister sentMails={user.sentMessages} receivedMails={user.receivedMessage} />
         </div>
 
 
