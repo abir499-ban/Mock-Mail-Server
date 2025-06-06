@@ -15,6 +15,26 @@ export type LoginFomType = z.infer<typeof LogInFormSchema>
 export type SignUpFormType = z.infer<typeof SignUpFormSchema>
 
 
+export type UserMessageType = {
+    _id: string;
+    sender: {
+        username: string;
+        email: string;
+    };
+    dest: {
+        email: string;
+    };
+    status: 'sent' | 'pending' | 'failed'; 
+    subject: string;
+    short_description: string;
+    body: string;
+    attachments: string; 
+    isfavourite: boolean;
+    isRead: boolean;
+    __v: number;
+
+}
+
 export type fetchedUserType = {
     _id: string;
     username: string;
@@ -22,4 +42,7 @@ export type fetchedUserType = {
     createdAt: string;
     updatedAt: string;
     __v: number;
+    sentMessages : UserMessageType[] | [];
+    receivedMessage : UserMessageType[] | []
 }
+

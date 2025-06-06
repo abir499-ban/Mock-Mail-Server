@@ -7,6 +7,7 @@ import LoadingSpinner from '@/components/shared/Loader'
 import { fetchedUserType } from '@/utils/user.schema'
 import { ComposeMessageModel } from '@/components/shared/MessageCompose'
 import { Button } from '@/components/ui/button'
+import EmailLister from '@/components/shared/MessageList'
 
 export default function Home() {
   const router = useRouter()
@@ -18,10 +19,12 @@ export default function Home() {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     __v: 0,
+    sentMessages : [],
+    receivedMessage : []
   })
 
   useEffect(() => {
-    if (status === 'unauthenticated'){
+    if (status === 'unauthenticated') {
       router.push('/auth/login')
     }
     else if (status === 'authenticated') {
@@ -43,14 +46,22 @@ export default function Home() {
 
   return (
     <>
-      <div className="text-5xl flex mt-16 justify-between items-center font-serif text-red-500  bg-red-50">
-        <p>Welcome</p>
-        <Button variant='ghost' onClick={()=> signOut()}>Sign Out</Button>
+      <div className="text-5xl flex justify-end mt-5 mr-4">
+        <Button variant='destructive' onClick={() => signOut()}>Sign Out</Button>
       </div>
-      
-      <section className='fixed bottom-8 right-6 z-50'>
-        <ComposeMessageModel email={user.email} username={user.username}/>
-      </section>
+
+      <div className='flex flex-row h-screen'>
+        <div className=' shadow-md p-4 overflow-y-auto'>
+          <EmailLister sentMails={user.sentMessages} receivedMails={user.receivedMessage}/>
+        </div>
+
+
+        <div>
+          <section className='fixed bottom-8 right-6 z-50'>
+            <ComposeMessageModel email={user.email} username={user.username} />
+          </section>
+        </div>
+      </div>
     </>
   );
 }
