@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
 import { fetchMethods } from '@/config/fetchAPI'
@@ -11,6 +11,7 @@ import EmailLister from '@/components/shared/MessageList'
 import connectToWSS from '@/utils/wssConnector'
 
 export default function Home() {
+  const wsRef = useRef<WebSocket | null>(null)
   const router = useRouter()
   const { status, data } = useSession()
   const [user, setuser] = useState<fetchedUserType>({
@@ -36,26 +37,42 @@ export default function Home() {
           //console.table(userData)
           setuser(userData)
 
-          try {
-            const ws = await connectToWSS(data.user.email)
-            ws.addEventListener('message', (eventData: any) => {
-              const socketData = JSON.parse(eventData.data)
-              if (socketData.event == 'incoming call') {
-                console.log(socketData.message)
-                alert(`New mail from ${socketData.message.from} about ${socketData.message.topic}`)
-              } else {
-                alert(`${socketData.message}`)
-              }
-            })
-          } catch (error) {
-            console.log("socke Error occured "+error)
+
+          const ws = await connectToWSS(data.user.email)
+          wsRef.current = ws
+          const eventDataHandler = (evenData: MessageEvent) => {
+            const socketData = JSON.parse(evenData.data)
+            if (socketData.event == 'incoming call') {
+              console.log(socketData.message)
+              alert(`New mail from ${socketData.message.from} about ${socketData.message.topic}`)
+            } else {
+              alert(`${socketData.message}`)
+            }
           }
 
+
+          ws.addEventListener('message', eventDataHandler)
+
+          return () => async () => {
+            if (wsRef.current) {
+              wsRef.current.removeEventListener('message', eventDataHandler)
+              wsRef.current.close()
+              wsRef.current = null
+            }
+          }
         } catch (error) {
           console.log(error)
         }
       }
+
       fetchUser()
+
+      return () => {
+        if (wsRef.current) {
+          wsRef.current.close()
+          wsRef.current = null
+        }
+      };
     }
   }, [status, router, data?.accessToken])
 
