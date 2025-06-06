@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { fetchMethods } from "@/config/fetchAPI"
 import { useSession } from 'next-auth/react'
 import { Button } from "../ui/button"
+import { toast } from "react-toastify"
 
 
 interface EmailItemProps {
@@ -23,6 +24,7 @@ export default function EmailItem({ email, type, onMailClick }: EmailItemProps) 
     try {
       const response = await fetchMethods.put(`/user/favorite/${email._id}`, { 'authorization' : `Bearer ${data?.accessToken}`})
       console.log(response)
+      toast.info('Message Favorite toggled')
     } catch (error) {
       console.log(error)
     }

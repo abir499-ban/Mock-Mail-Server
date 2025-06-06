@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import EmailLister from '@/components/shared/MessageList'
 import connectToWSS from '@/utils/wssConnector'
 import MailView from '@/components/shared/MailView'
+import { toast } from 'react-toastify'
 
 export default function Home() {
   const wsRef = useRef<WebSocket | null>(null)
@@ -47,7 +48,8 @@ export default function Home() {
             const socketData = JSON.parse(evenData.data)
             if (socketData.event == 'incoming call') {
               console.log(socketData.message)
-              alert(`New mail from ${socketData.message.from} about ${socketData.message.topic}`)
+              //alert(`New mail from ${socketData.message.from} about ${socketData.message.topic}`)
+              toast(`🔔New mail from ${socketData.message.from} about ${socketData.message.topic}`)
             } else {
               alert(`${socketData.message}`)
             }

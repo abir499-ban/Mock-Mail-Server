@@ -20,15 +20,16 @@ import { MessageSchema, MessageSchemaType } from '@/utils/message.schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { fetchMethods } from '@/config/fetchAPI'
+import { toast } from 'react-toastify'
 
 
 export function ComposeMessageModel({ username, email }: { username: string, email: string }) {
     const [file, setfile] = useState<File | null>(null)
     const [fileUrl, setfileUrl] = useState<string | null>(null)
     const { data } = useSession()
-    const[fileUploadControls, setfileUploadControls] = useState({
-        fileUploading : false,
-        fileUploaded : false
+    const [fileUploadControls, setfileUploadControls] = useState({
+        fileUploading: false,
+        fileUploaded: false
     })
 
     const handleFileUpload = async () => {
@@ -52,16 +53,18 @@ export function ComposeMessageModel({ username, email }: { username: string, ema
             formData.append("public_id", public_id);
 
             const cloudinaryRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
-                method:'POST',
-                body:formData
+                method: 'POST',
+                body: formData
             })
             const res = await cloudinaryRes.json()
             console.log("Uploaded to Cloudinary:", res);
             setfileUrl(res.secure_url)
-            setfileUploadControls((prev)=>({...prev , fileUploaded : true}))
+            setfileUploadControls((prev) => ({ ...prev, fileUploaded: true }))
+            toast.success("✅file Uploaded successfully")
         } catch (error) {
+            toast.error('❌Error in Uploading file')
             console.log(error)
-        }finally{
+        } finally {
             setfileUploadControls(prev => ({ ...prev, fileUploading: false }))
         }
     }
@@ -81,24 +84,28 @@ export function ComposeMessageModel({ username, email }: { username: string, ema
         }
     })
 
-    const sendMail = async(formdata : MessageSchemaType) =>{
+    const sendMail = async (formdata: MessageSchemaType) => {
         try {
             const sendMailData = {
-                dest_mail : formdata.dest,
-                subject : formdata.subject,
-                short_desc : formdata.short_desc,
-                body : formdata.body,
-                sender_email : email,
-                sender_username : username,
-                fileUrl : fileUrl
+                dest_mail: formdata.dest,
+                subject: formdata.subject,
+                short_desc: formdata.short_desc,
+                body: formdata.body,
+                sender_email: email,
+                sender_username: username,
+                fileUrl: fileUrl
             }
-            const response = await fetchMethods.post('/user/sendMail' , JSON.stringify(sendMailData), {
-                'authorization' : `Bearer ${data?.accessToken}`
+            const response = await fetchMethods.post('/user/sendMail', JSON.stringify(sendMailData), {
+                'authorization': `Bearer ${data?.accessToken}`
             })
-            if(response) console.log(response)
-            else console.log("Error")
+            if (response) {
+                console.log(response)
+                toast.success("mail queued sucessfully")
+            }
+            else { console.log("Error"); toast.error('mail could not be sent') }
         } catch (error) {
             console.log(error)
+            toast.error('mail could not be sent')
         }
     }
 
