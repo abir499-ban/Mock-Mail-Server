@@ -48,6 +48,28 @@ const userController = {
             console.log(error)
         }
         return new ResponseEmitter(res).successfull()
+    },
+    markFavorite : async(req , res)=>{
+        try {
+            const message_id = req.params.message_id
+            const  message = await new dbService().findBy_id(Message , message_id)
+            const prevval = message.isfavourite
+            const updatedmessage = await new dbService().findByIdAndUpdate(Message , message_id , {$set : {isfavourite : !prevval}})
+            return new ResponseEmitter(res).successfull("Message marked/removed  favourite succesfully")
+        } catch (error) {
+            console.log("Error", error)
+            return new ResponseEmitter(res).internalServerError()
+        }
+    },
+    readMail : async(req , res)=>{
+        try {
+            const message_id = req.params.message_id
+            const message = await new dbService().findByIdAndUpdate(Message , message_id , {$set : { isRead : true}})
+            return new ResponseEmitter(res).successfull('Message read successfully')
+        } catch (error) {
+            console.log(error)
+            return new ResponseEmitter(res).internalServerError()
+        }
     }
 }
 

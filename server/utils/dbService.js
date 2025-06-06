@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const Message = require('../models/Messages.schema')
 
 class dbService {
     constructor() {
