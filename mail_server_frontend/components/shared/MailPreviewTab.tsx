@@ -8,11 +8,13 @@ import {Badge} from '@/components/ui/badge'
 
 interface EmailItemProps{
     email : UserMessageType,
-    type : string
+    type : string,
+    onMailClick : (mail : UserMessageType) => void
 }
 
 
-export default function EmailItem({ email, type }: EmailItemProps) {
+export default function EmailItem({ email, type , onMailClick}: EmailItemProps) {
+
   let displayName = "" ,displayEmail = "";
   if(type == "sent"){
     displayEmail = email.dest.email
@@ -22,7 +24,7 @@ export default function EmailItem({ email, type }: EmailItemProps) {
   }
 
   return (
-    <Card
+    <Card onClick={()=>onMailClick(email)}
       className={`mb-3 transition-all hover:shadow-md cursor-pointer ${!email.isRead ? "border-l-4 border-l-blue-500 bg-blue-50/30" : ""}`}
     >
       <CardContent className="p-4">

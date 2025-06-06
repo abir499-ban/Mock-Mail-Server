@@ -9,7 +9,13 @@ import { UserMessageType } from "@/utils/user.schema"
 import EmailItem from "./MailPreviewTab"
 
 
-export default function EmailLister({sentMails , receivedMails} : {sentMails : UserMessageType[] , receivedMails : UserMessageType[]}) {
+export default function EmailLister({sentMails , receivedMails, onSelectMail} : {sentMails : UserMessageType[] , 
+  receivedMails : UserMessageType[], 
+  onSelectMail : (mail : UserMessageType) => void
+}) {
+
+
+
   const [activeTab, setActiveTab] = useState("received")
   const TotalMails : UserMessageType[] = receivedMails.concat(sentMails)
 
@@ -76,7 +82,7 @@ export default function EmailLister({sentMails , receivedMails} : {sentMails : U
           </div>
           <ScrollArea className="h-[600px] pr-4">
             {receivedMails.map((email) => (
-              <EmailItem key={email._id} email={email} type="received" />
+              <EmailItem key={email._id} email={email} type="received" onMailClick={(mail)=>onSelectMail(mail)}/>
             ))}
           </ScrollArea>
         </TabsContent>
@@ -88,7 +94,7 @@ export default function EmailLister({sentMails , receivedMails} : {sentMails : U
           </div>
           <ScrollArea className="h-[600px] pr-4">
             {sentMails.map((email) => (
-              <EmailItem key={email._id} email={email} type="sent" />
+              <EmailItem key={email._id} email={email} type="sent" onMailClick={(mail)=>onSelectMail(mail)}/>
             ))}
           </ScrollArea>
         </TabsContent>
@@ -100,7 +106,7 @@ export default function EmailLister({sentMails , receivedMails} : {sentMails : U
           </div>
           <ScrollArea className="h-[600px] pr-4">
             {TotalMails.filter((email) => email.isfavourite).map((email) => (
-              <EmailItem key={email._id} email={email} type="favorite" />
+              <EmailItem key={email._id} email={email} type="favorite" onMailClick={(mail)=>onSelectMail(mail)}/>
             ))}
           </ScrollArea>
         </TabsContent>
@@ -112,7 +118,7 @@ export default function EmailLister({sentMails , receivedMails} : {sentMails : U
           </div>
           <ScrollArea className="h-[600px] pr-4">
             {TotalMails.filter((email)=>email.isRead).map((email)=>(
-                <EmailItem key={email._id} email={email} type="read"/>
+                <EmailItem key={email._id} email={email} type="read" onMailClick={(mail)=>onSelectMail(mail)}/>
             ))}
           </ScrollArea>
         </TabsContent>

@@ -4,11 +4,12 @@ import { useRouter } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
 import { fetchMethods } from '@/config/fetchAPI'
 import LoadingSpinner from '@/components/shared/Loader'
-import { fetchedUserType } from '@/utils/user.schema'
+import { fetchedUserType, UserMessageType } from '@/utils/user.schema'
 import { ComposeMessageModel } from '@/components/shared/MessageCompose'
 import { Button } from '@/components/ui/button'
 import EmailLister from '@/components/shared/MessageList'
 import connectToWSS from '@/utils/wssConnector'
+import MailView from '@/components/shared/MailView'
 
 export default function Home() {
   const wsRef = useRef<WebSocket | null>(null)
@@ -24,6 +25,8 @@ export default function Home() {
     sentMessages: [],
     receivedMessage: []
   })
+  const [selectedmail, setselectedmail] = useState<UserMessageType | null>(null)
+
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -85,12 +88,13 @@ export default function Home() {
       </div>
 
       <div className='flex flex-row h-screen'>
-        <div className=' shadow-md p-4 overflow-y-auto'>
-          <EmailLister sentMails={user.sentMessages} receivedMails={user.receivedMessage} />
+        <div className=' w-1/2 shadow-md p-4 overflow-y-auto'>
+          <EmailLister sentMails={user.sentMessages} receivedMails={user.receivedMessage} onSelectMail={(mail)=>setselectedmail(mail)}/>
         </div>
 
 
-        <div>
+        <div className='w-1/2'>
+          {selectedmail && <MailView mail={selectedmail} />}
           <section className='fixed bottom-8 right-6 z-50'>
             <ComposeMessageModel email={user.email} username={user.username} />
           </section>
