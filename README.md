@@ -121,3 +121,9 @@ By using Redis queues and pub/sub, the services operate independently. The compo
 **Asynchronous Programming**
 Redis queues enable asynchronous workflows: producers (the backend) can enqueue messages instantly and continue handling new requests without waiting for the consumer to finish processing. Consumers (mail processing services) work independently, picking up tasks from the queue as resources allow. Similarly, pub/sub allows notifications to be sent and received without blocking the main application flow, ensuring real-time updates while maintaining high throughput and responsiveness.
 
+
+
+------------------------------------------------
+Thank you for checking out this project!  
+If you have any questions, feedback, or suggestions, feel free to open an issue or submit a pull request.
+
