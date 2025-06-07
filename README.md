@@ -11,6 +11,16 @@ Secure platform for document sharing via email with:
 5. Separate Mail Consumer for mail processing and staged updates.
 6. Secure and robust authentication for users.
 
+
+## Attaching some screenshots
+![image](https://github.com/abir499-ban/Mock-Mail-Server/blob/main/mail_server_frontend/public/assets/Screenshot%202025-06-08%20020842.png)
+
+![image](https://github.com/abir499-ban/Mock-Mail-Server/blob/main/mail_server_frontend/public/assets/Screenshot%202025-06-08%20020914.png)
+
+![image](https://github.com/abir499-ban/Mock-Mail-Server/blob/main/mail_server_frontend/public/assets/Screenshot%202025-06-08%20020930.png)
+
+## System Design
+![image](https://github.com/abir499-ban/Mock-Mail-Server/blob/main/mail_server_frontend/public/assets/Screenshot%202025-06-07%20194457.png)
    
 
 ##  Tech Stack
